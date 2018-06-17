@@ -12,47 +12,40 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val ints: List<Long> = listOf<Long>(1,2,3)
-        val sumInts1 = sum1(ints)
-        val sumInts2 = sum2(ints)
 
-        Log.d(TAG, "DEBUG--:sumInts1->$sumInts1")
-        Log.d(TAG, "DEBUG--:sumInts2->$sumInts2")
+        val firstIndexOfWhitespace = firstWhitespace("j kgakkg")
+        Log.d(TAG, "DEBUG--:firstWhitespace->$firstIndexOfWhitespace")
 
     }
 
-    private fun sum1(numbers: List<Long>): Long {
-        var sum = 0L
-        for (n in numbers) {
-            sum += n
+    private fun first(str: String, predicate: (Char) -> Boolean): Int {
+        // ローカル関数goを定義
+        // 末尾再帰として最適化 -> tailrec
+        tailrec fun go(str: String, index: Int): Int =
+                when {
+                    str.isEmpty() -> 1
+                    predicate(str.first()) -> index
+                    else -> go(str.drop(1), index + 1)
+                }
+        return go(str, 0)
+    }
+
+    private fun firstWhitespace(str: String): Int {
+        val isWhitespace: (Char) -> Boolean = {
+            it.isWhitespace()
         }
-        return sum
+        return first(str, isWhitespace)
     }
 
-    private fun sum2(numbers: List<Long>): Long =
-            if (numbers.isEmpty()) 0
-            else numbers.first() + sum2(numbers.drop(1))
+    // 今回の例ではisWhitespaceという名前をわざわざつける必要がないので
+    // 以下のようにする
+//    private fun firstWhitespace(str: String): Int = first(str, {it.isWhitespace()})
 
-//    private fun succ(i: Int): Int = i + 1
-//
-//    private fun hello(name: String = "World"): String {
-//        return "Hello, $name"
-//    }
 
-//    private fun sum(ints: Array<Int>): Int {
-//        var sum = 0
-//        for (i in ints) {
-//            sum += 1
-//        }
-//        return sum
-//    }
+    // 引数の最後にラムダ式があるときに限ってラムダ式を引数リストの外にだせる
+    // 構文糖衣(シンタックスシュガー)が提供されている
+    // 構文糖衣とはなんぞや？調べておく
+//    private fun firstWhitespace(str: String): Int = first(str) {it.isWhitespace()}
 
-//    private fun sum(vararg ints: Int): Int {
-//        var sum = 0
-//        for (i in ints) {
-//            sum += 1
-//        }
-//        return sum
-//    }
 
 }
